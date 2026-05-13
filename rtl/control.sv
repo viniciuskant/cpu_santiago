@@ -111,7 +111,7 @@ module control (
                 if ((in_opcode == 3'b111 )| (in_opcode == 3'b100)) nvalid_data = 1'b1; //NOP
                 else nvalid_data = 1'b0;
                 
-                if (p_error & ((in_opcode == 3'b111 ) | (in_opcode == 3'b100))) aluout_reg_en = 1'b0;
+                if (p_error | ((in_opcode == 3'b111 ) | (in_opcode == 3'b100))) aluout_reg_en = 1'b0;
                 else aluout_reg_en = 1'b1;
             end
 
