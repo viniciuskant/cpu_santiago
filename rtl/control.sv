@@ -55,7 +55,6 @@ module control (
             FETCH: next_state = EXEC;
             EXEC: next_state = STORE;
             STORE: next_state = FETCH;
-            default: next_state = RESET;
         endcase
     end
 
@@ -97,7 +96,7 @@ module control (
                 else memoryWrite = 1'b0;
 
                 //Se NOP ou Operação da ALU, escolhi o NOP para garantur o -1
-                if (in_opcode[2] == 0 | (in_opcode == 3'b111 ) | (in_opcode == 3'b111)) selmux2 = 1'b1; //Deve selecioar a saida da ALU
+                if (in_opcode[2] == 0 | (in_opcode == 3'b100 ) | (in_opcode == 3'b111)) selmux2 = 1'b1; //Deve selecioar a saida da ALU
                 else selmux2 = 1'b0; //Deve selecioar a saida da Memória
 
                 unique case (in_opcode)
@@ -111,7 +110,8 @@ module control (
                 if ((in_opcode == 3'b111 )| (in_opcode == 3'b100)) nvalid_data = 1'b1; //NOP
                 else nvalid_data = 1'b0;
                 
-                if (p_error | ((in_opcode == 3'b111 ) | (in_opcode == 3'b100))) aluout_reg_en = 1'b0;
+                // if (p_error | ((in_opcode == 3'b111 ) | (in_opcode == 3'b100))) aluout_reg_en = 1'b0;
+                if (((in_opcode == 3'b111 ) | (in_opcode == 3'b100))) aluout_reg_en = 1'b0;
                 else aluout_reg_en = 1'b1;
             end
 
@@ -119,18 +119,6 @@ module control (
                 // só salva se for operação válida
                 datain_reg_en = 1;
                 cpu_rdy = 1;
-            end
-
-            default: begin
-                aluin_reg_en = 1'b0;
-                datain_reg_en = 1'b0;
-                aluout_reg_en = 1'b0;
-                cpu_rdy = 1'b0;
-                selmux2 = 1'b0;
-                memoryRead = 1'b0;
-                memoryWrite = 1'b0;
-                nvalid_data = 1'b0;
-                opcode = 4'b0000;
             end
 
         endcase

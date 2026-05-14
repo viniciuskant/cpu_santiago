@@ -39,15 +39,6 @@ module top #(
 
     assign {dout_high, dout_low} = regCPU_OUT;
 
-    // Entradas dos muxes
-    logic [N-1:0][WIDTH-1:0] muxA_in;
-    logic [N-1:0][WIDTH-1:0] muxB_in;
-
-    assign muxB_in[0] = din_1;
-    assign muxB_in[1] = din_2;
-    assign muxB_in[2] = din_3;
-    assign muxB_in[3] = dout_low;
-
     register_bank #(.WIDTH(7)) reg_CMD_IN (
         .clk(clk),
         .rst(rst_out),

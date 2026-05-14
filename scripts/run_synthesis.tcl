@@ -45,8 +45,8 @@ set_output_delay 2.0 -clock clk [all_outputs]
 # set compile_ultra_ungroup_dw false
 # set compile_ultra_ungroup_dw_high_fanout false
 # compile_ultra no_autogroup -scan
-# compile_ultra 
-compile
+compile_ultra 
+# compile
 
 # reportar resultados
 report_area > reports/area.rpt

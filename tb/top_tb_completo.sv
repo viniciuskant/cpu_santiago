@@ -5,7 +5,7 @@
   para isso foi usada duas task e também alguns nops no 'código'
 */
 
-module tb_top ();
+module top_tb_completo ();
   // parameters
   localparam CLK_PERIOD = 10;
   localparam      WIDTH = 8;
@@ -58,6 +58,84 @@ module tb_top ();
 
   // clk gen
   always #(CLK_PERIOD/2) clk=~clk;
+
+  task automatic run_tb_fornecido();
+    begin
+      rst = 0;
+      #5;
+      rst = 1;
+      #5;
+
+      // deassert reset and does the first operation 
+      // ADD
+      rst   = 0;
+      din_1 = 1;
+      din_2 = 2;
+      cmdin = {2'b00, 2'b01, ADD};
+      @(posedge cpu_rdy);
+
+      // STORE
+      din_1 = 3;
+      cmdin = {2'b00, 2'b01, STORE};
+      @(posedge cpu_rdy);
+
+      // NOP
+      cmdin = {2'b00, 2'b01, NOP};
+      @(posedge cpu_rdy);
+
+      // SUB
+      cmdin = {2'b00, 2'b01, SUB};
+      @(posedge cpu_rdy);
+
+      // STORE
+      din_1 = 4;
+      cmdin = {2'b00, 2'b00, STORE};
+      @(posedge cpu_rdy);
+
+      // NOP
+      cmdin = {2'b00, 2'b01, NOP};
+      @(posedge cpu_rdy);
+
+      // LOAD
+      din_1 = 3;
+      cmdin = {2'b00, 2'b01, LOAD}; //Espero 3
+      @(posedge cpu_rdy);
+
+      // LOAD
+      din_1 = 4;
+      cmdin = {2'b00, 2'b01, LOAD}; //Espero 1
+      @(posedge cpu_rdy);
+
+      din_1 = 0;
+      din_2 = 8'hf9; // -7
+      din_3 = 8'hf06; // 6
+
+      cmdin = {2'b01, 2'b00, DIV}; //Espero erro
+      @(posedge cpu_rdy);
+
+      din_1 = 0;
+      din_2 = 8'h07; // 7
+      din_3 = 8'hf8; // -6
+
+      cmdin = {2'b01, 2'b10, MUL}; //Espero -42 ou d6
+      @(posedge cpu_rdy);
+
+
+      cmdin = {2'b01, 2'b10, MUL}; //Espero -42 ou d6
+      #35;
+      rst = 1;
+      #5;
+      rst = 0;
+
+      din_1 = 0;
+      din_2 = 8'h0f; // -1
+      din_3 = 8'h0f; // -1
+
+      cmdin = {2'b01, 2'b10, SUB}; //Espero zero
+      @(posedge cpu_rdy);
+
+    end
+  endtask
 
   // Função que executa o método babilônico para um dado N
   task automatic run_sqrt_test(input integer N);
@@ -279,8 +357,7 @@ module tb_top ();
         run_sqrt_test(i);
     end
 
-
-
+    run_tb_fornecido();
 
     #1000;
     $display("\n\n");

@@ -57,7 +57,7 @@ module ALU #(
                 4'b0100: out = sin1 * sin2; // MUL (signed)
                 4'b1000: out = (zero_in2) ? -1 : sin1 / sin2; //cometi um erro aqui, não podia atribuir FFFF, pois 
                                                             //ele entende isso como sem sinal e faz uma conversão em cima disso
-                default: out = sin1;                       // remover o default simplificou o circuito, pois virou de fato onehot
+                // default: out = sin1;                       // remover o default simplificou o circuito, pois virou de fato onehot
             endcase
         end else begin
             out = -1;
