@@ -24,6 +24,14 @@ module control (
 );
 
     logic [2:0] in_opcode;
+    logic is_nop, feedback_select, propagate_error;
+
+
+    assign in_select_a = cmd_in[6:5];
+    assign in_select_b = cmd_in[4:3];
+    assign is_nop         = (in_opcode == 3'b111) || (in_opcode == 3'b100);
+    assign feedback_select = (in_select_a == 2'b11) || (in_select_b == 2'b11);
+    assign propagate_error = p_error && feedback_select;
 
     assign rst_out = rst;
 
@@ -61,8 +69,6 @@ module control (
     // Lógica de saída, olha para os estádos e define a saída
     // colocar aqui as saídas padrões que são esperadas-
     always_comb begin
-        in_select_a = 2'b00;
-        in_select_b = 2'b00;
         aluin_reg_en = 1'b0;
         datain_reg_en = 1'b0;
         aluout_reg_en = 1'b0;
@@ -72,8 +78,17 @@ module control (
         memoryWrite = 1'b0;
 
         nvalid_data = 1'b0;
-        opcode = 4'b0001; // NOP
+        // opcode = 4'b0001; // NOP
         
+
+        unique case (in_opcode)
+            3'b000: opcode = 4'b0001; // ADD
+            3'b001: opcode = 4'b0010; // SUB
+            3'b010: opcode = 4'b0100; // MUX
+            3'b011: opcode = 4'b1000; // DIV
+            // default: opcode = 4'b0001; // ADD
+        endcase
+
         unique case (current_state)
 
             RESET: begin
@@ -83,8 +98,6 @@ module control (
 
             FETCH: begin
                 aluin_reg_en = 1;
-                in_select_a = cmd_in[6:5];
-                in_select_b = cmd_in[4:3];
             end
 
             EXEC: begin
@@ -99,18 +112,8 @@ module control (
                 if (in_opcode[2] == 0 | (in_opcode == 3'b100 ) | (in_opcode == 3'b111)) selmux2 = 1'b1; //Deve selecioar a saida da ALU
                 else selmux2 = 1'b0; //Deve selecioar a saida da Memória
 
-                unique case (in_opcode)
-                    3'b000: opcode = 4'b0001; // ADD
-                    3'b001: opcode = 4'b0010; // SUB
-                    3'b010: opcode = 4'b0100; // MUX
-                    3'b011: opcode = 4'b1000; // DIV
-                    default: opcode = 4'b0001; // ADD
-                endcase
-
-                if ((in_opcode == 3'b111 )| (in_opcode == 3'b100)) nvalid_data = 1'b1; //NOP
-                else nvalid_data = 1'b0;
+                nvalid_data = is_nop | propagate_error;
                 
-                // if (p_error | ((in_opcode == 3'b111 ) | (in_opcode == 3'b100))) aluout_reg_en = 1'b0;
                 if (((in_opcode == 3'b111 ) | (in_opcode == 3'b100))) aluout_reg_en = 1'b0;
                 else aluout_reg_en = 1'b1;
             end

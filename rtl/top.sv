@@ -1,6 +1,6 @@
 module top #(
     parameter WIDTH = 8,
-    parameter WIDTH_ADDRESS = 8,
+    parameter WIDTH_ADDRESS = 3,
     parameter N = 4
 )(
     input clk,
@@ -118,7 +118,7 @@ module top #(
         .memoryWrite(memoryWrite),
         .memoryRead(memoryRead),
         .memoryWriteData({dout_high, dout_low}),
-        .memoryAddress(regA_out), 
+        .memoryAddress(regA_out[WIDTH_ADDRESS-1:0]), 
         .memoryOutData(mem_out)
     );
 

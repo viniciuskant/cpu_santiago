@@ -43,7 +43,6 @@ module ALU #(
 
     assign error = (op[3] & zero_in2) | nvalid_data;
 
-    // sinais internos com extensão de sinal para operações aritméticas
     logic signed [2*WIDTH-1:0] sin1, sin2;
 
     assign sin1 = signed'(in1); // extensão para signed (complemento de dois)

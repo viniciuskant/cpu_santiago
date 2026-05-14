@@ -117,6 +117,13 @@ module top_tb_completo ();
       din_2 = 8'h07; // 7
       din_3 = 8'hf8; // -6
 
+      cmdin = {2'b01, 2'b11, ADD}; //Espero erro, pois estou usando a divisão errada
+      @(posedge cpu_rdy);
+
+
+      cmdin = {2'b11, 2'b00, SUB}; //Espero erro, pois estou usando a soma errada
+      @(posedge cpu_rdy);
+
       cmdin = {2'b01, 2'b10, MUL}; //Espero -42 ou d6
       @(posedge cpu_rdy);
 

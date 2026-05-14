@@ -72,5 +72,9 @@ clean:
 	rm -rf *.vpd *.vcd *.log *.fsdb *.key
 	rm -rf DVEfiles verdiLog novas.* urgReport
 	rm -rf AN.DB
+	rm -rf simulator
+	rm -rf work
+	rm -rf alib-52
+	rm .nfs* moduleparamid default.svf 
 
 .PHONY: all run synth clean

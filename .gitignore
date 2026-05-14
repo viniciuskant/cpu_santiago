@@ -7,6 +7,9 @@ DVEfiles/
 verdiLog/
 novas.conf
 novas.rc
+simulator/
+outputs/
+runs/
 
 # exec and bin
 simv
@@ -23,6 +26,7 @@ vc_hdrs.h
 *.vcd
 *.fsdb
 *.shm
+*.svf
 *.trn
 *.dsn
 *.diag
@@ -30,6 +34,8 @@ vc_hdrs.h
 *.err
 *.report
 *.rpt
+.nfs*
+moduleparamid
 
 # coverage
 urgReport/
